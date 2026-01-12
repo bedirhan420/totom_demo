@@ -1,10 +1,18 @@
 import pytest
+import os  # <--- Bunu eklemeyi unutma!
 from wiki_page import WikiPage
-from utils import excelden_veri_oku  # Az önce yazdığımız fonksiyonu çağırıyoruz
+from utils import excelden_veri_oku
 
-# Excel'den verileri çekiyoruz
-# Bu değişken şöyle bir liste olacak: [('Atatürk', 'Atatürk'), ('Python', 'Python')...]
-TEST_VERILERI = excelden_veri_oku("data.xlsx")
+# --- YOL AYARI (PATH FIX) ---
+# 1. Bu dosyanın (test_wiki_ddt.py) bilgisayardaki tam adresini bul
+MEVCUT_KLASOR = os.path.dirname(os.path.abspath(__file__))
+
+# 2. Excel dosyasının tam yolunu oluştur (Klasör yolu + Dosya adı)
+# Dosya adın ekran görüntüsünde 'data.xlsx' olarak görünüyor.
+EXCEL_YOLU = os.path.join(MEVCUT_KLASOR, "data.xlsx")
+
+# 3. Fonksiyona artık sadece ismini değil, TAM ADRESİNİ gönderiyoruz
+TEST_VERILERI = excelden_veri_oku(EXCEL_PATH=EXCEL_YOLU)
 
 # --- PARAMETRİK TEST ---
 # @pytest.mark.parametrize dekoratörü testi çoğaltır.
