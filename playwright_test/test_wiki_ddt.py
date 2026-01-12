@@ -12,7 +12,7 @@ MEVCUT_KLASOR = os.path.dirname(os.path.abspath(__file__))
 EXCEL_YOLU = os.path.join(MEVCUT_KLASOR, "data.xlsx")
 
 # 3. Fonksiyona artık sadece ismini değil, TAM ADRESİNİ gönderiyoruz
-TEST_VERILERI = excelden_veri_oku(EXCEL_PATH=EXCEL_YOLU)
+TEST_VERILERI = excelden_veri_oku(EXCEL_YOLU)
 
 # --- PARAMETRİK TEST ---
 # @pytest.mark.parametrize dekoratörü testi çoğaltır.
