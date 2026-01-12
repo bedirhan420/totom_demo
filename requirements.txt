@@ -1,0 +1,21 @@
+# --- Test Çalıştırıcı ve Raporlama ---
+pytest
+pytest-html
+allure-pytest
+
+# --- Playwright Otomasyonu (Modern) ---
+playwright
+pytest-playwright
+
+# --- Selenium Otomasyonu (Eski) ---
+selenium
+webdriver-manager
+
+# --- Data Driven Testing (Excel Okuma) ---
+openpyxl
+
+# --- AI Agent ve LLM (Browser-Use & Gemini) ---
+browser-use
+langchain-google-genai
+pydantic
+python-dotenv

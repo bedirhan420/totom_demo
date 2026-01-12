@@ -1,0 +1,30 @@
+# --- Python Genel ---
+__pycache__/
+*.pyc
+venv/
+.env
+.DS_Store
+
+# --- Pytest & Raporlar ---
+.pytest_cache/
+assets/
+sonuclar/
+rapor_*.html
+*.html
+
+# --- Allure Raporları ---
+allure-report/
+allure-results/
+
+# --- Selenium Artıkları ---
+geckodriver.log
+chromedriver
+test_headless_ss/*.png
+*.log
+
+# --- Playwright Artıkları ---
+test-results/
+playwright-report/
+
+# --- Docker ---
+.dockerignore
