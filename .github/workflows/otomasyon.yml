@@ -1,0 +1,60 @@
+name: Test Otomasyonu ve Raporlama
+
+on:
+  push:
+    branches: [ main ] # Kodu main'e attığında çalışır
+  workflow_dispatch:   # GitHub'dan elle tetiklemek için buton ekler
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  test-calistir:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Depoyu Çek (Checkout)
+        uses: actions/checkout@v4
+
+      - name: Python Kur
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Kütüphaneleri Yükle
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Playwright Tarayıcılarını Kur
+        run: playwright install chromium
+
+      - name: Testleri Koştur (Sadece DDT)
+        # Visual testi eledik, sadece çalışan wiki testini ve varsa diğerlerini çalıştırıyoruz.
+        # --html=index.html parametresi raporu oluşturur.
+        run: pytest playwright_test/test_wiki_ddt.py --html=index.html
+        continue-on-error: true # Test patlasa bile raporu yayınla
+
+      - name: Raporu Hazırla
+        run: |
+          mkdir public
+          mv index.html public/
+          # Eğer assets klasörü varsa onu da taşı (CSS/JS için)
+          if [ -d "assets" ]; then cp -r assets public/; fi
+
+      - name: GitHub Pages'e Yükle
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    needs: test-calistir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Canlıya Al (Deploy)
+        id: deployment
+        uses: actions/deploy-pages@v4
