@@ -10,6 +10,7 @@ class InventoryPage:
         self.add_to_cart_buttons = page.locator("button:has-text('Add to cart')")
         self.cart_badge = page.locator(".shopping_cart_badge")
         self.cart_button = page.locator("[data-test='shopping-cart-link']")
+        self.product_images = page.locator(".inventory_item_img img")
 
     def verify_on_inventory_page(self):
         expect(self.page).to_have_url("https://www.saucedemo.com/inventory.html")
@@ -30,3 +31,6 @@ class InventoryPage:
     
     def click_cart_button(self):
         self.cart_button.click()
+    
+    def get_all_image_sources(self):
+        return self.product_images.evaluate_all("imgs => imgs.map(img => img.getAttribute('src'))")

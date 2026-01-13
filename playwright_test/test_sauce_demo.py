@@ -5,6 +5,7 @@ from pom.inventory_page import InventoryPage
 from pom.cart_page import CartPage
 from pom.checkout_info_page import CheckoutInfoPage
 from pom.checkout_overview_page import CheckoutOverviewPage
+import allure
 
 def test_valid_login(page: Page):
     login_p = LoginPage(page)
@@ -69,5 +70,20 @@ def test_checkout(page: Page):
     checkout_overview_p.click_finish()
     checkout_overview_p.verify_success_message()
     
+def test_problem_user_wrong_images(page: Page):
+    login_p = LoginPage(page)
+    inventory_p = InventoryPage(page)
+
+    login_p.navigate()
+    login_p.login("problem_user", "secret_sauce")
+
+    sources = inventory_p.get_all_image_sources()
     
+    print(f"\nBulunan Resimler: {sources}")
+
+    unique_images = set(sources)
     
+    assert len(unique_images) == 1, "HATA! Resimlerin hepsi aynı değil, problem_user düzelmiş mi?"
+    
+    with allure.step("Resim Kontrolü Başarılı"):
+        allure.attach("Tüm resimlerin kaynak kodları aynı, problem_user hatası doğrulandı.", name="Sonuç")
