@@ -1,9 +1,9 @@
-name: Test Otomasyonu ve Raporlama
+name: SauceDemo Otomasyon Hattı 🚀
 
 on:
   push:
     branches: [ main ] # Kodu main'e attığında çalışır
-  workflow_dispatch:   # GitHub'dan elle tetiklemek için buton ekler
+  workflow_dispatch:   # Elle tetiklemek için
 
 permissions:
   contents: read
@@ -11,13 +11,13 @@ permissions:
   id-token: write
 
 jobs:
-  test-calistir:
+  test-ve-rapor:
     runs-on: ubuntu-latest
     steps:
       - name: Depoyu Çek (Checkout)
         uses: actions/checkout@v4
 
-      - name: Python Kur
+      - name: Python Kurulumu
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
@@ -30,31 +30,32 @@ jobs:
       - name: Playwright Tarayıcılarını Kur
         run: playwright install chromium
 
-      - name: Testleri Koştur (Sadece DDT)
-        # Visual testi eledik, sadece çalışan wiki testini ve varsa diğerlerini çalıştırıyoruz.
-        # --html=index.html parametresi raporu oluşturur.
-        run: pytest playwright_test/test_wiki_ddt.py --html=index.html
-        continue-on-error: true # Test patlasa bile raporu yayınla
+      - name: Testleri Koştur (SauceDemo)
+        # --alluredir: Sonuçları 'allure-results' klasörüne yazar
+        # continue-on-error: Test başarısız olsa bile durma, raporu üret.
+        run: pytest playwright_test/test_sauce_demo.py --alluredir=allure-results
+        continue-on-error: true
 
-      - name: Raporu Hazırla
-        run: |
-          mkdir public
-          mv index.html public/
-          # Eğer assets klasörü varsa onu da taşı (CSS/JS için)
-          if [ -d "assets" ]; then cp -r assets public/; fi
+      - name: Allure Raporunu İnşa Et 📊
+        uses: simple-elf/allure-report-action@master
+        if: always() # Testler patlasa bile bu adım çalışsın
+        with:
+          allure_results: allure-results
+          allure_report: allure-report
+          gh_pages: gh-pages
 
-      - name: GitHub Pages'e Yükle
+      - name: Raporu GitHub Pages için Hazırla
         uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: allure-report
 
   deploy:
-    needs: test-calistir
+    needs: test-ve-rapor
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Canlıya Al (Deploy)
+      - name: Canlıya Al (Deploy) 🌍
         id: deployment
         uses: actions/deploy-pages@v4
