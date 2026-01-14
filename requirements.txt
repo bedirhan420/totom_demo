@@ -2,6 +2,7 @@
 pytest
 pytest-html
 allure-pytest
+pytest-xdist
 
 # --- Playwright Otomasyonu (Modern) ---
 playwright

@@ -15,6 +15,7 @@ class LoginPage:
         self.username_input.fill(username)
         self.password_input.fill(password)
         self.login_button.click()
-
-    def verify_error_message(self, text):
-        expect(self.error_message).to_contain_text(text)
+    
+    def verify_error_message(self, expected_text):
+        expect(self.error_message).to_be_visible()
+        expect(self.error_message).to_contain_text(expected_text)

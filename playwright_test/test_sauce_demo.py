@@ -71,6 +71,37 @@ def test_checkout(page: Page):
     checkout_overview_p.print_total_price()
     checkout_overview_p.click_finish()
     checkout_overview_p.verify_success_message()
+
+@pytest.mark.parametrize("username", [
+    "standard_user", 
+    "problem_user", 
+    "performance_glitch_user", 
+    "error_user", 
+    "visual_user"
+])
+def test_checkout_multi_user(page: Page, username):
+    login_p = LoginPage(page)
+    inventory_p = InventoryPage(page)
+    cart_p = CartPage(page)
+    checkout_info_p = CheckoutInfoPage(page)
+    checkout_overview_p = CheckoutOverviewPage(page)
+
+    login_p.navigate()
+    login_p.login(username, "secret_sauce")
+
+    selected_products = ["Sauce Labs Backpack", "Sauce Labs Bike Light","Test.allTheThings() T-Shirt (Red)"]
+    inventory_p.add_items_to_cart(selected_products)
+    
+    inventory_p.click_cart_button()
+    cart_p.verify_items_in_cart(selected_products)
+    
+    cart_p.click_checkout()
+    checkout_info_p.fill_info("Bedirhan", "Celik", "06000")
+    
+    checkout_overview_p.print_total_price()
+    checkout_overview_p.click_finish()
+    
+    checkout_overview_p.verify_success_message()
     
 def test_problem_user_wrong_images(page: Page):
     login_p = LoginPage(page)

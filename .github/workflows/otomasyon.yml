@@ -35,6 +35,7 @@ jobs:
           PYTHONBREAKPOINT: 0
         run: |
           pytest playwright_test/test_sauce_demo.py \
+            -n auto\
             --alluredir=allure-results \
             --tracing=retain-on-failure \
             --video=retain-on-failure \
