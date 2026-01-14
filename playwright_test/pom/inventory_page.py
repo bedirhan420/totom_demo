@@ -25,6 +25,12 @@ class InventoryPage:
 
     def add_first_item_to_cart(self):
         self.add_to_cart_buttons.first.click()
+    
+    def add_items_to_cart(self,product_names):
+        for name in product_names:
+            product_locator = self.inventory_items.filter(has_text=name)
+            product_locator.locator("button:has-text('Add to cart')").click()
+        
 
     def verify_cart_count(self, count):
         expect(self.cart_badge).to_have_text(str(count))

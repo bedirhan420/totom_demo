@@ -58,10 +58,12 @@ def test_checkout(page: Page):
     login_p.navigate()
     login_p.login("standard_user", "secret_sauce")
 
-    inventory_p.add_first_item_to_cart()
+    selected_products = ["Sauce Labs Backpack", "Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]
     
+    inventory_p.add_items_to_cart(selected_products)
     inventory_p.click_cart_button()
     
+    cart_p.verify_items_in_cart(selected_products)
     cart_p.click_checkout()
     
     checkout_info_p.fill_info("Bedirhan", "Celik", "06000")

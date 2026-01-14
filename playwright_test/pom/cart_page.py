@@ -8,3 +8,9 @@ class CartPage:
 
     def click_checkout(self):
         self.checkout_button.click()
+        
+    def verify_items_in_cart(self, expected_products):
+        actual_products = self.page.locator(".inventory_item_name").all_inner_texts()
+        
+        for product in expected_products:
+            assert product in actual_products, f"{product} sepette bulunamadı!"

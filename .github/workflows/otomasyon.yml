@@ -50,13 +50,6 @@ jobs:
             test-results/
             allure-results/
           if-no-files-found: warn
-      
-      - name: Trace Dosyalarını Allure'a Enjekte Et
-        if: always()
-        run: |
-          # Klasör yapısını korumadan sadece zip dosyalarını düz bir şekilde allure-results'a atıyoruz
-          # Bu, Allure'un dosyaları daha kolay 'attachment' olarak görmesini sağlar.
-          find test-results -name "trace.zip" -exec cp {} allure-results/trace-kodu.zip \;
 
       - name: Allure Raporunu İnşa Et 📊
         uses: simple-elf/allure-report-action@master
