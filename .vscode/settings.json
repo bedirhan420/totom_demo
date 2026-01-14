@@ -1,7 +1,0 @@
-{
-    "python.testing.pytestArgs": [
-        "playwright_test"
-    ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
-}
