@@ -34,9 +34,11 @@ jobs:
         run: mkdir -p allure-results test-results
 
       - name: Testleri Koştur (SauceDemo)
+        env:
+          PYTHONBREAKPOINT: 0
         # --alluredir: Sonuçları 'allure-results' klasörüne yazar
         # continue-on-error: Test başarısız olsa bile durma, raporu üret.
-        run: pytest playwright_test/test_sauce_demo.py --trace --alluredir=allure-results --video=retain-on-failure -p no:pdb
+        run: pytest playwright_test/test_sauce_demo.py --trace --alluredir=allure-results --video=retain-on-failure -p no:pdb -c /dev/null     
         continue-on-error: true
       
       - name: Trace Dosyalarını Yükle
