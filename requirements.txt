@@ -14,13 +14,5 @@ webdriver-manager
 # --- Data Driven Testing (Excel Okuma) ---
 openpyxl
 
-# --- AI Agent ve LLM (Browser-Use & Gemini) ---
 PyYAML==6.0.2
-browser-use
-langchain-google-genai
-langchain-groq
-langchain-openai
-pydantic
-python-dotenv
-
 faker

@@ -2,8 +2,8 @@ name: SauceDemo Otomasyon Hattı 🚀
 
 on:
   push:
-    branches: [ main ] # Kodu main'e attığında çalışır
-  workflow_dispatch:   # Elle tetiklemek için
+    branches: [ main ]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -14,7 +14,7 @@ jobs:
   test-ve-rapor:
     runs-on: ubuntu-latest
     steps:
-      - name: Depoyu Çek (Checkout)
+      - name: Depoyu Çek
         uses: actions/checkout@v4
 
       - name: Python Kurulumu
@@ -29,30 +29,31 @@ jobs:
 
       - name: Playwright Tarayıcılarını Kur
         run: playwright install chromium
-      
-      - name: Hazırlık
-        run: mkdir -p allure-results test-results
 
-      - name: Testleri Koştur (SauceDemo)
+      - name: Testleri Koştur
         env:
           PYTHONBREAKPOINT: 0
-          PYTEST_ADDOPTS: "-p no:pdb"   # Pytest'e debugger eklentisini yükleme der
-          LANGSMITH_TRACING: "false"     # Şüpheli eklentiyi susturur
-        # --alluredir: Sonuçları 'allure-results' klasörüne yazar
-        # continue-on-error: Test başarısız olsa bile durma, raporu üret.
-        run: pytest playwright_test/test_sauce_demo.py --trace --alluredir=allure-results --video=retain-on-failure 
+        run: |
+          pytest playwright_test/test_sauce_demo.py \
+            --alluredir=allure-results \
+            --tracing=retain-on-failure \
+            --video=retain-on-failure \
+            --output=test-results
         continue-on-error: true
-      
-      - name: Trace Dosyalarını Yükle
+
+      - name: Test Sonuçlarını Yükle
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-traces
-          path: test-results
+          name: test-results
+          path: |
+            test-results/
+            allure-results/
+          if-no-files-found: warn
 
       - name: Allure Raporunu İnşa Et 📊
         uses: simple-elf/allure-report-action@master
-        if: always() # Testler patlasa bile bu adım çalışsın
+        if: always()
         with:
           allure_results: allure-results
           allure_report: allure-report
@@ -60,6 +61,7 @@ jobs:
           gh_pages: gh-pages
 
       - name: Raporu GitHub Pages için Hazırla
+        if: always()
         uses: actions/upload-pages-artifact@v3
         with:
           path: allure-report
@@ -71,6 +73,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Canlıya Al (Deploy) 🌍
+      - name: Canlıya Al 🌍
         id: deployment
         uses: actions/deploy-pages@v4
