@@ -22,3 +22,5 @@ langchain-groq
 langchain-openai
 pydantic
 python-dotenv
+
+faker

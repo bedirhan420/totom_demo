@@ -12,7 +12,7 @@ class CheckoutOverviewPage:
         self.finish_button.click()
     
     def verify_success_message(self):
-        expect(self.complete_header).to_have_text("Thank you for your order!")
+        expect(self.complete_header).to_have_text("aaaaaaaaa")
         
     def print_total_price(self):
         raw_text = self.total_price_label.inner_text()

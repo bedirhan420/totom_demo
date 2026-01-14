@@ -33,8 +33,15 @@ jobs:
       - name: Testleri Koştur (SauceDemo)
         # --alluredir: Sonuçları 'allure-results' klasörüne yazar
         # continue-on-error: Test başarısız olsa bile durma, raporu üret.
-        run: pytest playwright_test/test_sauce_demo.py --alluredir=allure-results
+        run: pytest playwright_test/test_sauce_demo.py --trace on  --alluredir=allure-results --video=retain-on-failure
         continue-on-error: true
+      
+      - name: Trace Dosyalarını Yükle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: test-results
 
       - name: Allure Raporunu İnşa Et 📊
         uses: simple-elf/allure-report-action@master

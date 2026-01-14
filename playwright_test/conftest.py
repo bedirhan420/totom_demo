@@ -1,24 +1,42 @@
 import pytest
 import allure
-from playwright.sync_api import Page
+import time # Dosyanın en üstüne ekle
 
-# Test başarısız olursa Allure raporuna ekran görüntüsü ekle
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     outcome = yield
     report = outcome.get_result()
     
-    # Sadece test çalışırken (setup/teardown değil) ve hata aldıysa
     if report.when == "call" and report.failed:
-        # Test fonksiyonundaki 'page' fixture'ını yakala
         page = item.funcargs.get('page')
         if page:
-            # Ekran görüntüsünü al
-            screenshot = page.screenshot(full_page=True)
-            
-            # Allure raporuna "Hata Anı" adıyla ekle
             allure.attach(
-                screenshot, 
+                page.screenshot(full_page=True), 
                 name="Hata Anı (Screenshot)", 
                 attachment_type=allure.attachment_type.PNG
             )
+
+            page.context.close() 
+            video_path = page.video.path() if page.video else None
+            
+            if video_path:
+                time.sleep(0.5) 
+                allure.attach.file(
+                    video_path, 
+                    name="Hata Anı (Video)", 
+                    attachment_type=allure.attachment_type.WEBM
+                )
+
+            # TRACE DOSYASINI RAPORA EKLEME:
+            # test-results içindeki ilgili trace dosyasını bulup iliştirir
+
+            trace_path = f"test-results/{item.name.replace('[', '-').replace(']', '-')}/trace.zip"
+            # Not: Dosya yolunun doğruluğundan emin olmak için test-results yapınızı kontrol edin
+            try:
+                allure.attach.file(
+                    trace_path, 
+                    name="Hata İzleme Kaydı (Trace)", 
+                    attachment_type=allure.attachment_type.ZIP
+                )
+            except:
+                pass # Dosya henüz oluşmadıysa hata vermemesi için
