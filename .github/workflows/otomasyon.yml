@@ -36,6 +36,8 @@ jobs:
       - name: Testleri Koştur (SauceDemo)
         env:
           PYTHONBREAKPOINT: 0
+          PYTEST_ADDOPTS: "-p no:pdb"   # Pytest'e debugger eklentisini yükleme der
+          LANGSMITH_TRACING: "false"     # Şüpheli eklentiyi susturur
         # --alluredir: Sonuçları 'allure-results' klasörüne yazar
         # continue-on-error: Test başarısız olsa bile durma, raporu üret.
         run: pytest playwright_test/test_sauce_demo.py --trace --alluredir=allure-results --video=retain-on-failure -p no:pdb -c /dev/null     
