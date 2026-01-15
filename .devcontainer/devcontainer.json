@@ -1,0 +1,19 @@
+{
+    "name": "Playwright Automation Dev",
+    "image": "mcr.microsoft.com/playwright/python:v1.57.0-noble",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-playwright.playwright",
+                "njpwerner.autodocstring",
+                "tamasfe.even-better-toml"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/bin/python3"
+            }
+        }
+    },
+    "postCreateCommand": "pip3 install --no-cache-dir -r requirements.txt",
+    "remoteUser": "root"
+}
