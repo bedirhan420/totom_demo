@@ -6,6 +6,30 @@ from pom.cart_page import CartPage
 from pom.checkout_info_page import CheckoutInfoPage
 from pom.checkout_overview_page import CheckoutOverviewPage
 import allure
+import json
+
+def load_test_data():
+    with open("test_data.json","r") as f:
+        return json.load(f)
+
+def get_login_data():
+    from playwright.sync_api import sync_playwright
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.goto("https://www.saucedemo.com/")
+        
+        user_text = page.locator("#login_credentials").inner_text()
+        usernames = [line.strip() for line in user_text.split("\n") if line.strip() and ":" not in line]
+        
+        pass_text = page.locator(".login_password").inner_text()
+        password = pass_text.split(":")[-1].strip()
+        
+        browser.close()
+        return {"usernames": usernames, "password": password}
+
+test_data = load_test_data()
+login_data = get_login_data()
 
 def test_valid_login(page: Page):
     login_p = LoginPage(page)
@@ -22,7 +46,7 @@ def test_locked_out_user(page: Page):
     
     login_p.login("locked_out_user", "secret_sauce")
     
-    login_p.verify_error_message("Epic sadface: Sorry, this user has been locked out.")
+    login_p.verify_error_message(test_data["error_messages"]["locked_out"])
 
 def test_price_sorting_low_to_high(page: Page):
     login_p = LoginPage(page)
@@ -48,37 +72,7 @@ def test_add_to_cart(page: Page):
 
     inventory_p.verify_cart_count(1)
 
-def test_checkout(page: Page):
-    login_p = LoginPage(page)
-    inventory_p = InventoryPage(page)
-    cart_p = CartPage(page)
-    checkout_info_p = CheckoutInfoPage(page)
-    checkout_overview_p = CheckoutOverviewPage(page)
-
-    login_p.navigate()
-    login_p.login("standard_user", "secret_sauce")
-
-    selected_products = ["Sauce Labs Backpack", "Sauce Labs Bike Light", "Sauce Labs Bolt T-Shirt"]
-    
-    inventory_p.add_items_to_cart(selected_products)
-    inventory_p.click_cart_button()
-    
-    cart_p.verify_items_in_cart(selected_products)
-    cart_p.click_checkout()
-    
-    checkout_info_p.fill_info("Bedirhan", "Celik", "06000")
-    
-    checkout_overview_p.print_total_price()
-    checkout_overview_p.click_finish()
-    checkout_overview_p.verify_success_message()
-
-@pytest.mark.parametrize("username", [
-    "standard_user", 
-    "problem_user", 
-    "performance_glitch_user", 
-    "error_user", 
-    "visual_user"
-])
+@pytest.mark.parametrize("username",login_data["usernames"])
 def test_checkout_multi_user(page: Page, username):
     login_p = LoginPage(page)
     inventory_p = InventoryPage(page)
@@ -87,16 +81,17 @@ def test_checkout_multi_user(page: Page, username):
     checkout_overview_p = CheckoutOverviewPage(page)
 
     login_p.navigate()
-    login_p.login(username, "secret_sauce")
+    login_p.login(username,login_data["password"])
 
-    selected_products = ["Sauce Labs Backpack", "Sauce Labs Bike Light","Test.allTheThings() T-Shirt (Red)"]
+    selected_products = test_data["selected_products"]
     inventory_p.add_items_to_cart(selected_products)
     
     inventory_p.click_cart_button()
     cart_p.verify_items_in_cart(selected_products)
     
+    u = test_data["user_info"]
     cart_p.click_checkout()
-    checkout_info_p.fill_info("Bedirhan", "Celik", "06000")
+    checkout_info_p.fill_info(u["first_name"],u["last_name"],u["zip_code"])
     
     checkout_overview_p.print_total_price()
     checkout_overview_p.click_finish()

@@ -1,0 +1,15 @@
+{
+  "selected_products": [
+    "Sauce Labs Backpack",
+    "Sauce Labs Bike Light",
+    "Test.allTheThings() T-Shirt (Red)"
+  ],
+  "user_info": {
+    "first_name": "Bedirhan",
+    "last_name": "Celik",
+    "zip_code": "06000"
+  },
+  "error_messages": {
+    "locked_out": "Epic sadface: Sorry, this user has been locked out."
+  }
+}

@@ -1,4 +1,4 @@
-name: SauceDemo Otomasyon Hattı 🚀
+name: SauceDemo Otomasyon Hattı (Docker) 🚀
 
 on:
   push:
@@ -13,29 +13,26 @@ permissions:
 jobs:
   test-ve-rapor:
     runs-on: ubuntu-latest
+    # JOB seviyesinde Docker Konteynerı tanımlıyoruz
+    container:
+      image: mcr.microsoft.com/playwright/python:v1.49.0-noble # Her şey içinde hazır
+    
     steps:
       - name: Depoyu Çek
         uses: actions/checkout@v4
-
-      - name: Python Kurulumu
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12'
 
       - name: Kütüphaneleri Yükle
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Playwright Tarayıcılarını Kur
-        run: playwright install chromium
+          # Not: 'playwright install' adımı artık gerekmiyor, imajda yüklü geliyor.
 
       - name: Testleri Koştur
         env:
           PYTHONBREAKPOINT: 0
         run: |
           pytest playwright_test/test_sauce_demo.py \
-            -n auto\
+            -n auto \
             --alluredir=allure-results \
             --tracing=retain-on-failure \
             --video=retain-on-failure \
@@ -53,6 +50,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Allure Raporunu İnşa Et 📊
+        # Allure eylemi için JavaScript tabanlı bir action kullanıyoruz (Docker içinde çalışabilir)
         uses: simple-elf/allure-report-action@master
         if: always()
         with:

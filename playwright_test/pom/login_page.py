@@ -19,3 +19,5 @@ class LoginPage:
     def verify_error_message(self, expected_text):
         expect(self.error_message).to_be_visible()
         expect(self.error_message).to_contain_text(expected_text)
+        
+    
