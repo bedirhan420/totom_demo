@@ -82,10 +82,12 @@ def test_checkout_multi_user(page: Page, username):
     cart_p = CartPage(page)
     checkout_info_p = CheckoutInfoPage(page)
     checkout_overview_p = CheckoutOverviewPage(page)
-
+    
     login_p.navigate()
     login_p.login(username,login_data["password"])
-
+    if username == "locked_out_user":
+        login_p.verify_error_message(test_data["error_messages"]["locked_out"])
+    
     selected_products = test_data["selected_products"]
     inventory_p.add_items_to_cart(selected_products)
     
