@@ -87,6 +87,7 @@ def test_checkout_multi_user(page: Page, username):
     login_p.login(username,login_data["password"])
     if username == "locked_out_user":
         login_p.verify_error_message(test_data["error_messages"]["locked_out"])
+        return
     
     selected_products = test_data["selected_products"]
     inventory_p.add_items_to_cart(selected_products)
