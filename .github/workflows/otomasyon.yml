@@ -13,9 +13,8 @@ permissions:
 jobs:
   test-ve-rapor:
     runs-on: ubuntu-latest
-    # JOB seviyesinde Docker Konteynerı tanımlıyoruz
     container:
-      image: mcr.microsoft.com/playwright/python:v1.49.0-noble # Her şey içinde hazır
+      image: mcr.microsoft.com/playwright/python:v1.57.0-noble 
     
     steps:
       - name: Depoyu Çek

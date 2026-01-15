@@ -7,9 +7,12 @@ from pom.checkout_info_page import CheckoutInfoPage
 from pom.checkout_overview_page import CheckoutOverviewPage
 import allure
 import json
+import os
 
 def load_test_data():
-    with open("test_data.json","r") as f:
+    cur_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(cur_dir,"test_data.json")
+    with open(file_path,"r") as f:
         return json.load(f)
 
 def get_login_data():
